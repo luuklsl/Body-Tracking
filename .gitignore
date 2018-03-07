@@ -4,6 +4,7 @@
 [Bb]uild/
 [Bb]uilds/
 Assets/AssetStoreTools*
+unity\position_tracking\Assets\RP_Rigged\Texture*
 
 # Visual Studio 2015 cache directory
 /.vs/
