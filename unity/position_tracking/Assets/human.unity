@@ -183,7 +183,7 @@ Prefab:
     - target: {fileID: 13700000, guid: 0164036d68f99124b9bccc46335259d4, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: b72c785ccf877dc45bd47d52f94dfef8, type: 2}
+      objectReference: {fileID: 2100000, guid: 8bf4e8b28f6ad6244bb2e992685ae920, type: 2}
     - target: {fileID: 400148, guid: 0164036d68f99124b9bccc46335259d4, type: 3}
       propertyPath: m_LocalRotation.y
       value: -0.6427876

@@ -1,4 +1,8 @@
+#include <SoftwareSerial.h>
 #include <Wire.h>
+
+SoftwareSerial xbee(8, 9);
+
 
 const int MPU_addr = 0x68;  int16_t AcX,  AcY,  AcZ,  Tmp,  GyX,  GyY,  GyZ;
 const int MPU2_addr = 0x69; int16_t AcX2, AcY2, AcZ2, Tmp2, GyX2, GyY2, GyZ2;
@@ -12,6 +16,7 @@ double x;  double y;  double z;
 double x2; double y2; double z2;
 
 void setup() {
+  xbee.begin(9600);
   Wire.begin();
   i=0;
 
@@ -115,7 +120,7 @@ void loop() {
         */
         Serial.print("Angle");Serial.print("\t");Serial.println(xavg); 
         Serial.println("-----------------------------------------");
-        
+        xbee.print(String(xavg) + "a");
         delay(500);
         i=-1; //reset counter 
       }

@@ -13,14 +13,14 @@ public class Movement : MonoBehaviour {
 
     void Start () {
         Debug.Log("START");
-        arduino = new Arduino("COM6", 9600, 1);
+        arduino = new Arduino("COM4", 9600, 1);
         arduino.read_until_close((KeyValuePair<char, float> c) => mover(c), this);
 
         bodyparts = new Dictionary<char, BodyPart>() //this is being used for linking parts with the body
         {
-            { 'a', new BodyPart("spine_01")},
+            { 'a', new BodyPart("neck")},
             { 'b', new BodyPart("spine_02")},
-            { 'c', new BodyPart("neck")}
+            { 'c', new BodyPart("spine_01")}
         };
 
     }
