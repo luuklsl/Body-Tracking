@@ -12,7 +12,7 @@ char imus[] = {'a','b','c'};
 long iteration;
 void loop() {
   iteration++;
-  for(int i = 0; i < sizeof(imus)/sizeof(char); i++){
+  for(int i = 0; i < sizeof(imus)/sizeof(char); i++){ //Loop through all imu's, emulate them, output to serial (debug) and xbee (for actual sending)
     float angle = emulateIMU(iteration,i);
     Serial.println(String(angle,3) + imus[i]);
     xbee.print(String(angle,3) + imus[i]);

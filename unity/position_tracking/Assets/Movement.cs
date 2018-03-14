@@ -13,10 +13,10 @@ public class Movement : MonoBehaviour {
 
     void Start () {
         Debug.Log("START");
-        arduino = new Arduino("COM3", 9600, 1);
+        arduino = new Arduino("COM6", 9600, 1);
         arduino.read_until_close((KeyValuePair<char, float> c) => mover(c), this);
 
-        bodyparts = new Dictionary<char, BodyPart>()
+        bodyparts = new Dictionary<char, BodyPart>() //this is being used for linking parts with the body
         {
             { 'a', new BodyPart("spine_01")},
             { 'b', new BodyPart("spine_02")},
@@ -63,6 +63,7 @@ public class Arduino
         stream.BaseStream.Flush();
     }
     private IEnumerator coroutine;
+
     public void read_until_close(Action<KeyValuePair<char, float>> callback, MonoBehaviour myMonoBehaviour_)//(string s) => mover(s)
     {
         myMonoBehaviour = myMonoBehaviour_;
