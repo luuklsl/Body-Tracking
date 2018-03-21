@@ -10,7 +10,7 @@
 #include <SoftwareSerial.h>
 SoftwareSerial xbee(8, 9);
 
-#include <MPU6050.h>
+#include <MPU6050.h> //import library via: "sketch/include library/ add zip library" and then select the zip in root of this file
 
 MPU6050 mpu;
 
