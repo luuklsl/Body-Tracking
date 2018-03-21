@@ -14,7 +14,7 @@ public class Movement : MonoBehaviour {
     void Start () {
         Debug.Log("START");
         arduino = new Arduino("COM3", 9600, 1);
-        arduino.read_until_close((KeyValuePair<char, float> c) => mover(c), this);
+        arduino.read_until_close((KeyValuePair<char, Vector3> c) => mover(c), this);
 
         bodyparts = new Dictionary<char, BodyPart>() //this is being used for linking parts with the body
         {
@@ -32,7 +32,7 @@ public class Movement : MonoBehaviour {
         //hip.transform.Rotate(new Vector3(0,10,0));
     }
 
-    public void mover(KeyValuePair<char, float> data)
+    public void mover(KeyValuePair<char, Vector3> data)
     {
         BodyPart bodyPart = bodyparts[data.Key];
         bodyPart.move(data.Value);
@@ -64,7 +64,7 @@ public class Arduino
     }
     private IEnumerator coroutine;
 
-    public void read_until_close(Action<KeyValuePair<char, float>> callback, MonoBehaviour myMonoBehaviour_)//(string s) => mover(s)
+    public void read_until_close(Action<KeyValuePair<char, Vector3>> callback, MonoBehaviour myMonoBehaviour_)//(string s) => mover(s)
     {
         myMonoBehaviour = myMonoBehaviour_;
         coroutine = AsynchronousReadFromArduino(callback,() => Debug.LogError("Error!"));
@@ -78,7 +78,7 @@ public class Arduino
     }
 
 
-    public IEnumerator AsynchronousReadFromArduino(Action<KeyValuePair<char, float>> callback, Action fail = null)
+    public IEnumerator AsynchronousReadFromArduino(Action<KeyValuePair<char, Vector3>> callback, Action fail = null)
     {
         string value = "";
         do
@@ -100,11 +100,12 @@ public class Arduino
 
                 if (IsEnglishLetter(new_value_char))//if end of the command
                 {
-                    float value_float = 0;
+                    Vector3 axis;
                     try
                     {
-                        value_float = float.Parse(value);
-                        KeyValuePair<char, float> command = new KeyValuePair<char, float>(new_value_char, value_float);
+                        string[] axis_string = value.Split(',');
+                        axis = new Vector3(float.Parse(axis_string[0]), float.Parse(axis_string[1]), float.Parse(axis_string[2]));
+                        KeyValuePair<char, Vector3> command = new KeyValuePair<char, Vector3>(new_value_char, axis);
                         callback(command);
                         Debug.Log("command" + command.ToString());
                     }
@@ -147,10 +148,10 @@ public class BodyPart
         startState = bodypart.transform.rotation;
     }
 
-    public void move(float rotation)
+    public void move(Vector3 rotation)
     {
         bodypart.transform.rotation = startState;
-        bodypart.transform.Rotate(new Vector3(0, 0, rotation));
+        bodypart.transform.Rotate(rotation);
     }
 }
 
