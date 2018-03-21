@@ -120,8 +120,8 @@ void loop() {
         */
         Serial.print("Angle");Serial.print("\t");Serial.println(xavg); 
         Serial.println("-----------------------------------------");
-        xbee.print(String(xavg) + "a");
-        delay(500);
+        xbee.print(String(xavg) + "," + String(yavg) + "," + String(zavg) + "a");
+        delay(166);
         i=-1; //reset counter 
       }
     
