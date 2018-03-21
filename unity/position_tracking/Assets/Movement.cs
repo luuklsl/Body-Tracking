@@ -102,10 +102,15 @@ public class Arduino
                     try
                     {
                         string[] axis_string_split = axis_string.Split(','); //split up the axis string to seperate angles XYZ
-                        Vector3 axis = new Vector3(float.Parse(axis_string_split[0]), float.Parse(axis_string_split[1]), float.Parse(axis_string_split[2])); //Parse string angles to a axis vector
-                        KeyValuePair<char, Vector3> command = new KeyValuePair<char, Vector3>(new_axis_char, axis); //create dictinary entry for body part represented by the character in new_axis_char
-                        callback(command);
-                        Debug.Log("command" + command.ToString());
+
+                        if(axis_string_split.Length == 3) //if the axis have the right amount of axis
+                        {
+                            Vector3 axis = new Vector3(float.Parse(axis_string_split[0]), float.Parse(axis_string_split[1]), float.Parse(axis_string_split[2])); //Parse string angles to a axis vector
+                            KeyValuePair<char, Vector3> command = new KeyValuePair<char, Vector3>(new_axis_char, axis); //create dictinary entry for body part represented by the character in new_axis_char
+                            callback(command);
+                            Debug.Log("command" + command.ToString());
+                        }
+
                     }
                     catch(FormatException e) //catch when string cannot be converted to float
                     {
