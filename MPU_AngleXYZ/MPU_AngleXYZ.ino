@@ -7,10 +7,10 @@ SoftwareSerial xbee(8, 9);
 const int MPU_addr = 0x68;  int16_t AcX,  AcY,  AcZ,  Tmp,  GyX,  GyY,  GyZ;
 const int MPU2_addr = 0x69; int16_t AcX2, AcY2, AcZ2, Tmp2, GyX2, GyY2, GyZ2;
 
-float xavg, yavg, zavg;
+float xavg, yavg, zavg,xavg2, yavg2, zavg2;
 int minVal = 265; int maxVal = 402;
 int i,j, xval, yval, zval; 
-int avgx[10],avgy[10],avgz[10]; //initializing arrays for writig down 10 latest measurments
+int avgx[10],avgy[10],avgz[10],avgx2[10],avgy2[10],avgz2[10];  //initializing arrays for writig down 10 latest measurments
 
 double x;  double y;  double z;
 double x2; double y2; double z2;
@@ -70,89 +70,74 @@ void loop() {
     y2 = RAD_TO_DEG * (atan2(-xAng2, -zAng2) + PI);
     z2 = RAD_TO_DEG * (atan2(-yAng2, -xAng2) + PI);
 
-  //Printing
-    xval=x2-x; yval=y2-y; zval=z2-z; //calcualting difference in values between 2 MPUs for X,Y and Z
-    if(xval<0){
-      xval+=360;}
-    if(yval<0){
-      yval+=360;}
-    if(zval<0){
-      zval+=360;
-      }
-      
-    //Writing current difference value into an array  
-      avgx[i]=xval; avgy[i]=yval; avgz[i]=zval;
-        /*Displaying values from the array every step [10 steps]
-        Serial.print("[i]="); Serial.println(i);
-        Serial.print("Avg X= ");Serial.print(avgx[i]);Serial.print("\t");
-        Serial.print("Avg Y= ");Serial.print(avgy[i]);Serial.print("\t");
-        Serial.print("Avg Z= ");Serial.print(avgz[i]);Serial.println("\t"); 
-        */
+//  //Printing
+//    xval=x2-x; yval=y2-y; zval=z2-z; //calcualting difference in values between 2 MPUs for X,Y and Z
+//    if(xval<0){
+//      xval+=360;}
+//    if(yval<0){
+//      yval+=360;}
+//    if(zval<0){
+//      zval+=360;
+//      }
+//      
 
+
+    //Writing current difference value into an array  
+      avgx[i]=x; avgy[i]=y; avgz[i]=z;
+      avgx2[i]=x2; avgy2[i]=y2; avgz2[i]=z2;
+ 
     //Store and display the last 10 difference values 
       if(i==9){
         //Serial.println("VALUES IN THE ARRAY");
         long sumx, sumy, sumz = 0L ;  // sum will be larger than an item, long for safety.
+        long sumx2, sumy2, sumz2 = 0L; 
           for(j=0; j<10; j++){
-            //Serial.print("XYZ");Serial.print(j+1);Serial.print("\t");Serial.print(avgx[j]);Serial.print("\t");Serial.print(avgy[j]);Serial.print("\t");Serial.println(avgz[j]);
             sumx += avgx [j]; sumy += avgy [j]; sumz += avgz [j]; //Find sum of last 10 diference values
+            sumx2 += avgx2 [j]; sumy2 += avgy2 [j]; sumz2 += avgz2 [j]; //Find sum of last 10 diference values
+            
           }
-        
-        //Print the Sums
-          //Serial.println();Serial.print("SUM");Serial.print("\t");Serial.print(sumx);Serial.print("\t");Serial.print(sumy);Serial.print("\t");Serial.print(sumz);Serial.println("\t");
         
         //Find avarage value from the last 10 differences
           xavg= sumx/(i+1); yavg= sumy/(i+1); zavg= sumz/(i+1);
+          xavg2= sumx2/(i+1); yavg2= sumy2/(i+1); zavg2= sumz2/(i+1);
         
-        //Print the average
-        if (xavg>350 || xavg<10){
-          xavg = 0;
-        }
-        if (yavg>350 || yavg<10){
-          yavg = 0;
-        }
-        if (zavg>350 || zavg<10){
-          zavg = 0;
-        }
-          /*Serial.println("-----------------------------------------");
-          Serial.print("AVG");Serial.print("\t");Serial.print(xavg);Serial.print("\t");Serial.print(yavg);Serial.print("\t");Serial.print(zavg);Serial.println("\t");
-          Serial.println("-----------------------------------------");
-        */
-        Serial.print("Angle");Serial.print("\t");Serial.println(xavg); 
-        Serial.println("-----------------------------------------");
-        xbee.print(String(xavg) + "," + String(yavg) + "," + String(zavg) + "a");
+//        //Print the average
+//        if (xavg>350 || xavg<10){
+//          xavg = 0;
+//        }
+//        if (yavg>350 || yavg<10){
+//          yavg = 0;
+//        }
+//        if (zavg>350 || zavg<10){
+//          zavg = 0;
+//        }
+//         if (xavg2>350 || xavg2<10){
+//          xavg2 = 0;
+//        }
+//        if (yavg2>350 || yavg2<10){
+//          yavg2 = 0;
+//        }
+//        if (zavg2>350 || zavg2<10){
+//          zavg2 = 0;
+//        }
+
+//        Serial.print("Angle");Serial.print("\t");Serial.println(xavg); 
+//        Serial.println("-----------------------------------------");
+//        xbee.print(String(xavg) + "," + String(yavg) + "," + String(zavg) + "b");
+//        delay(166);
+
+        xbee.print(String(xavg) + "," + String(yavg) + "," + String(zavg) + "b");
         delay(166);
-        i=-1; //reset counter 
-      }
-    
-    //Printing value differences from 2MPUs
-    /*  Serial.println("-----------------------------------------");
-      Serial.print("Angle X= "); Serial.print(xval); Serial.print("\t");
-      Serial.print("Y= "); Serial.print(yval); Serial.print("\t");
-      Serial.print("Z= "); Serial.println(zval); 
-    */  
-    //Print line
-      //Serial.println("-----------------------------------------");
-      //delay(500);
+        xbee.print(String(xavg2) + "," + String(yavg2)+ "," + String(zavg2) + "c");
+        delay(166);
+
+       i=-1; //reset counter 
+    }
+
+
 i++;
 }
 
-
-  /*
- 
-  //Print X Values
-  Serial.print("X= "); Serial.print(x); Serial.print("\t"); Serial.print("X2= "); Serial.println(x2);
-  
-  //Print Y Values
-  Serial.print("Y= "); Serial.print(y); Serial.print("\t"); Serial.print("Y2= "); Serial.println(y2);
-  
-  //Print Z Values
-  Serial.print("Z= "); Serial.print(z); Serial.print("\t"); Serial.print("Z2= "); Serial.println(z2);
-
-  //Print Line
-  Serial.println("-----------------------------------------");
-  delay(500);
-  */
 
 
 
