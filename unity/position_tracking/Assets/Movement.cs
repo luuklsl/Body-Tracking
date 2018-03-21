@@ -80,54 +80,52 @@ public class Arduino
 
     public IEnumerator AsynchronousReadFromArduino(Action<KeyValuePair<char, Vector3>> callback, Action fail = null)
     {
-        string value = "";
+        string axis_string = ""; //string wherein the command is recreated
         do
         {
-            int new_value;
+            int new_value; //values come in as INTs that represent characters in ascii. for every loop we try to retreive a new one
 
             try
             {
-                new_value = stream.ReadChar();     
+                new_value = stream.ReadChar();  //read int from the arduino   
             }
             catch (TimeoutException)
             {
-                new_value = 0;
+                new_value = 0; //if the arduino does not send an int
             }
 
-            if (new_value != 0) {
+            if (new_value != 0) { //when a new character is send
+                char new_axis_char = (char)new_value; //convert newly retreived int to a char
 
-                char new_value_char = (char)new_value;
-
-                if (IsEnglishLetter(new_value_char))//if end of the command
+                if (IsEnglishLetter(new_axis_char))//if end of the command send to axis to the body part new_axis_char
                 {
-                    Vector3 axis;
                     try
                     {
-                        string[] axis_string = value.Split(',');
-                        axis = new Vector3(float.Parse(axis_string[0]), float.Parse(axis_string[1]), float.Parse(axis_string[2]));
-                        KeyValuePair<char, Vector3> command = new KeyValuePair<char, Vector3>(new_value_char, axis);
+                        string[] axis_string_split = axis_string.Split(','); //split up the axis string to seperate angles XYZ
+                        Vector3 axis = new Vector3(float.Parse(axis_string_split[0]), float.Parse(axis_string_split[1]), float.Parse(axis_string_split[2])); //Parse string angles to a axis vector
+                        KeyValuePair<char, Vector3> command = new KeyValuePair<char, Vector3>(new_axis_char, axis); //create dictinary entry for body part represented by the character in new_axis_char
                         callback(command);
                         Debug.Log("command" + command.ToString());
                     }
                     catch(FormatException e) //catch when string cannot be converted to float
                     {
-                        Debug.Log("value" + value);
+                        Debug.Log("value" + axis_string);
                         Debug.Log(e);
                     }
 
-                    value = ""; //reset
+                    axis_string = ""; //reset axis for retreiving a new one
                     yield return null;
                 }
                 else
                 {
-                    value += new_value_char; //if command is nog completed add to the rest
+                    axis_string += new_axis_char; //if axis string is not completed add to the rest
                 }
             }
-            else
+            else //nothing is detected wait a little bit 1/60fps for next try
             {
                 yield return new WaitForSeconds(0.05f);
             }
-        } while (true);
+        } while (true);//run all the time
     }
 
     bool IsEnglishLetter(char c)
