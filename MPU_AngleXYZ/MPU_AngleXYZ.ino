@@ -34,7 +34,8 @@ void setup() {
   
   Serial.begin(9600);
 }
-
+boolean calibrated = false;
+double xc,yc,zc,xc2,yc2,zc2;
 void loop() {
   //MPU_1
     Wire.beginTransmission(MPU_addr);
@@ -126,8 +127,22 @@ void loop() {
 //        xbee.print(String(xavg) + "," + String(yavg) + "," + String(zavg) + "b");
 //        delay(166);
 
+        if(!calibrated){
+          calibrated = true;
+          xc = xavg;
+          yc = yavg;
+          zc = zavg;
+          xc2 = xavg2f ri 0p ';
+          yc2 = yavg2;
+          zc2 = zavg2;
+        }
+        xavg -= xc;
+         yavg -= yc;
+          zavg -= zc;
+        xavg2 -= xc2;
+         yavg2 -= yc2;
+          zavg2 -= zc2;       
         xbee.print(String(xavg) + "," + String(yavg) + "," + String(zavg) + "b");
-        delay(166);
         xbee.print(String(xavg2) + "," + String(yavg2)+ "," + String(zavg2) + "c");
         delay(166);
 
